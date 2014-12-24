@@ -404,16 +404,16 @@ impl FromError<Error> for Box<StdError> {
 ///
 /// This is a temporary measure until the standard library provides more
 /// impls for `std::string::IntoString`.
-pub trait StrAllocating {
+pub trait StrExt {
     /// Provide an owned String.
     fn into_str(self) -> String;
 }
 
-impl StrAllocating for String {
+impl StrExt for String {
     fn into_str(self) -> String { self }
 }
 
-impl<'a> StrAllocating for &'a str {
+impl<'a> StrExt for &'a str {
     fn into_str(self) -> String { self.to_owned() }
 }
 
@@ -506,7 +506,7 @@ impl Docopt {
     /// program. e.g., `["cp", "src", "dest"]` is right while `["src", "dest"]`
     /// is wrong.
     pub fn argv<I, S>(mut self, argv: I) -> Docopt
-               where I: Iterator<S>, S: StrAllocating {
+               where I: Iterator<S>, S: StrExt {
         self.argv = Some(argv.skip(1).map(|s| s.into_str()).collect());
         self
     }
